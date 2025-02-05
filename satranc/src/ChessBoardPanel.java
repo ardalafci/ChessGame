@@ -22,26 +22,30 @@ public class ChessBoardPanel extends JPanel {
 
                 ChessPiece piece = board.getPiece(y, x);
 
-                // Eğer taş seçildiyse
-                if (piece != null) {
-                    if (selectedPiece == null) {
+                if (selectedPiece == null) {
+                    // Hiç taş seçili değilse ve bir taş varsa, o taşı seç
+                    if (piece != null) {
                         selectedPiece = piece;
                         selectedX = x;
                         selectedY = y;
-                    } else {
-                        // Eğer taş seçiliyse, yeni bir kareye taşımayı dene
-                        if (piece == selectedPiece || isValidMove(selectedPiece, selectedX, selectedY, x, y)) {
-                            // Taşı taşı
-                            board.setPiece(y, x, selectedPiece);
-                            board.setPiece(selectedY, selectedX, null); // Eski konumu boşalt
-                            selectedPiece = null; // Seçili taşı sıfırla
-                        } else {
-                            // Geçersiz hamle
-                            selectedPiece = null; // Seçimi sıfırla
-                        }
+                    }
+                } else {
+                    if (selectedPiece == piece) {
+                        // Eğer aynı taşa tıklanırsa sadece seçimi iptal et
+                        selectedPiece = null;
+                    } else if (piece != null) {
+                        // Farklı bir taş seçildiğinde, önceki taşı sıfırla ve yeni taşı seç
+                        selectedPiece = piece;
+                        selectedX = x;
+                        selectedY = y;
+                    } else if (isValidMove(selectedPiece, selectedX, selectedY, x, y)) {
+                        // Eğer geçerli hamle yapılırsa taşı taşı
+                        board.setPiece(y, x, selectedPiece);
+                        board.setPiece(selectedY, selectedX, null);
+                        selectedPiece = null; // Seçimi sıfırla
                     }
                 }
-                repaint(); // Tahtayı yeniden çiz
+                repaint();
             }
         });
     }
