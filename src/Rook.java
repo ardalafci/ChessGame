@@ -20,8 +20,8 @@ public class Rook extends ChessPiece {
         for (int i = 1; i < 8; i++) {
             // Yatay (sağa)
             if (x + i < 8 && board.getPiece(y, x + i) == null) {
-                g.setColor(Color.GREEN);
-                g.fillRect((x + i) * cellSize, y * cellSize, cellSize, cellSize);
+                g.setColor(new Color(0, 255, 0, 100)); // Açık yeşil renkte yarı saydam
+                g.fillOval((x + i) * cellSize + cellSize / 4, y * cellSize + cellSize / 4, cellSize / 2, cellSize / 2);
             } else {
                 break;
             }
@@ -30,8 +30,8 @@ public class Rook extends ChessPiece {
         for (int i = 1; i < 8; i++) {
             // Yatay (sola)
             if (x - i >= 0 && board.getPiece(y, x - i) == null) {
-                g.setColor(Color.GREEN);
-                g.fillRect((x - i) * cellSize, y * cellSize, cellSize, cellSize);
+                g.setColor(new Color(0, 255, 0, 100)); // Açık yeşil renkte yarı saydam
+                g.fillOval((x - i) * cellSize + cellSize / 4, y * cellSize + cellSize / 4, cellSize / 2, cellSize / 2);
             } else {
                 break;
             }
@@ -40,8 +40,8 @@ public class Rook extends ChessPiece {
         for (int i = 1; i < 8; i++) {
             // Dikey (aşağı)
             if (y + i < 8 && board.getPiece(y + i, x) == null) {
-                g.setColor(Color.GREEN);
-                g.fillRect(x * cellSize, (y + i) * cellSize, cellSize, cellSize);
+                g.setColor(new Color(0, 255, 0, 100)); // Açık yeşil renkte yarı saydam
+                g.fillOval(x * cellSize + cellSize / 4, (y + i) * cellSize + cellSize / 4, cellSize / 2, cellSize / 2);
             } else {
                 break;
             }
@@ -50,11 +50,12 @@ public class Rook extends ChessPiece {
         for (int i = 1; i < 8; i++) {
             // Dikey (yukarı)
             if (y - i >= 0 && board.getPiece(y - i, x) == null) {
-                g.setColor(Color.GREEN);
-                g.fillRect(x * cellSize, (y - i) * cellSize, cellSize, cellSize);
+                g.setColor(new Color(0, 255, 0, 100)); // Açık yeşil renkte yarı saydam
+                g.fillOval(x * cellSize + cellSize / 4, (y - i) * cellSize + cellSize / 4, cellSize / 2, cellSize / 2);
             } else {
                 break;
             }
         }
     }
+
 }

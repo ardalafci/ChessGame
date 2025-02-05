@@ -72,6 +72,8 @@ public class ChessBoardPanel extends JPanel {
                 if (selectedPiece != null && row == selectedY && col == selectedX) {
                     g.setColor(new Color(0, 255, 0, 100)); // Yeşil renkte yarı saydam vurgulama
                     g.fillRect(col * cellSize, row * cellSize, cellSize, cellSize);
+                    // Seçili taşın geçerli hamlelerini göster
+                    selectedPiece.highlightValidMoves(g, col, row, cellSize, board);
                 }
             }
         }
@@ -83,6 +85,7 @@ public class ChessBoardPanel extends JPanel {
             g.drawString(String.valueOf(8 - i), 8 * cellSize + 10, i * cellSize + cellSize / 2); // 1-8
         }
     }
+
 
     // Geçerli bir hamleyi kontrol et
     private boolean isValidMove(ChessPiece piece, int startX, int startY, int endX, int endY) {
@@ -97,6 +100,26 @@ public class ChessBoardPanel extends JPanel {
 
     private boolean isValidRookMove(int startX, int startY, int endX, int endY) {
         // Kale yalnızca yatay veya dikey hareket eder
-        return startX == endX || startY == endY;
+        if (startX == endX) {
+            // Dikey hareket
+            int step = (endY > startY) ? 1 : -1; // Hedefin üstünde mi, altında mı olduğunu belirle
+            for (int i = startY + step; i != endY; i += step) {
+                if (board.getPiece(i, startX) != null) {
+                    return false; // Eğer bir taş varsa hareket geçersiz
+                }
+            }
+        } else if (startY == endY) {
+            // Yatay hareket
+            int step = (endX > startX) ? 1 : -1; // Hedefin sağında mı, solunda mı olduğunu belirle
+            for (int i = startX + step; i != endX; i += step) {
+                if (board.getPiece(endY, i) != null) {
+                    return false; // Eğer bir taş varsa hareket geçersiz
+                }
+            }
+        } else {
+            return false; // Yalnızca yatay ve dikey hareketler geçerlidir
+        }
+        return true;
     }
+
 }
