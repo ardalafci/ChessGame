@@ -58,4 +58,36 @@ public class Rook extends ChessPiece {
         }
     }
 
+    @Override
+    public boolean isValidMove(int startX, int startY, int endX, int endY, Board board) {
+        // Kale yalnızca yatay veya dikey hareket eder
+        if (startX == endX) {
+            // Dikey hareket
+            int step = (endY > startY) ? 1 : -1; // Hedefin üstünde mi, altında mı olduğunu belirle
+            for (int i = startY + step; i != endY; i += step) {
+                if (board.getPiece(i, startX) != null) {
+                    return false; // Eğer bir taş varsa hareket geçersiz
+                }
+            }
+        } else if (startY == endY) {
+            // Yatay hareket
+            int step = (endX > startX) ? 1 : -1; // Hedefin sağında mı, solunda mı olduğunu belirle
+            for (int i = startX + step; i != endX; i += step) {
+                if (board.getPiece(endY, i) != null) {
+                    return false; // Eğer bir taş varsa hareket geçersiz
+                }
+            }
+        } else {
+            return false; // Yalnızca yatay ve dikey hareketler geçerlidir
+        }
+
+        // Taşın hedef karedeki taşın rengini kontrol et
+        ChessPiece targetPiece = board.getPiece(endY, endX);
+        if (targetPiece != null && targetPiece.isWhite() == this.isWhite()) {
+            return false; // Aynı renkten taş varsa hareket geçersiz
+        }
+
+        return true;
+    }
+
 }

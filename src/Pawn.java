@@ -58,4 +58,28 @@ public class Pawn extends ChessPiece {
             }
         }
     }
+    @Override
+    public boolean isValidMove(int startX, int startY, int endX, int endY, Board board) {
+        int direction = this.isWhite() ? 1 : -1; // Beyaz piyon yukarı, siyah piyon aşağı gider
+
+        // Bir kare ileri hareket
+        if (startX == endX && endY == startY + direction && board.getPiece(endY, endX) == null) {
+            return true;
+        }
+
+        // İlk hamle için iki kare ileri hareket
+        if (startX == endX && startY == (this.isWhite() ? 1 : 6) && endY == startY + 2 * direction && board.getPiece(endY, endX) == null && board.getPiece(startY + direction, startX) == null) {
+            return true;
+        }
+
+        // Çapraz al
+        if (Math.abs(startX - endX) == 1 && endY == startY + direction) {
+            ChessPiece targetPiece = board.getPiece(endY, endX);
+            if (targetPiece != null && targetPiece.isWhite() != this.isWhite()) {
+                return true; // Rakip taşını çapraz alabilir
+            }
+        }
+
+        return false;
+    }
 }

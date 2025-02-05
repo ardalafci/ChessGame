@@ -34,4 +34,18 @@ public class King extends ChessPiece {
             }
         }
     }
+
+    @Override
+    public boolean isValidMove(int startX, int startY, int endX, int endY, Board board) {
+        // Şah yalnızca bir kare hareket eder
+        if (Math.abs(startX - endX) <= 1 && Math.abs(startY - endY) <= 1) {
+            // Hareket sadece bir kare mesafede olabilir
+            ChessPiece targetPiece = board.getPiece(endY, endX);
+            if (targetPiece != null && targetPiece.isWhite() == this.isWhite()) {
+                return false; // Aynı renkten taş varsa hareket geçersiz
+            }
+            return true;
+        }
+        return false;
+    }
 }

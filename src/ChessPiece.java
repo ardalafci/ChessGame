@@ -21,4 +21,6 @@ public abstract class ChessPiece {
     public abstract void draw(Graphics g, int x, int y, int cellSize);
 
     public abstract void highlightValidMoves(Graphics g, int x, int y, int cellSize, Board board);
+
+    public abstract boolean isValidMove(int startX, int startY, int endX, int endY, Board board);
 }

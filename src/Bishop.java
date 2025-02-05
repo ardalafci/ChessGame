@@ -57,4 +57,24 @@ public class Bishop extends ChessPiece {
             }
         }
     }
+
+    @Override
+    public boolean isValidMove(int startX, int startY, int endX, int endY, Board board) {
+        // Fil sadece çapraz hareket eder
+        if (Math.abs(startX - endX) == Math.abs(startY - endY)) {
+            int xStep = (endX > startX) ? 1 : -1;
+            int yStep = (endY > startY) ? 1 : -1;
+            for (int i = 1; i < Math.abs(startX - endX); i++) {
+                if (board.getPiece(startY + i * yStep, startX + i * xStep) != null) {
+                    return false; // Eğer bir taş varsa hareket geçersiz
+                }
+            }
+            ChessPiece targetPiece = board.getPiece(endY, endX);
+            if (targetPiece != null && targetPiece.isWhite() == this.isWhite()) {
+                return false; // Aynı renkten taş varsa hareket geçersiz
+            }
+            return true;
+        }
+        return false;
+    }
 }

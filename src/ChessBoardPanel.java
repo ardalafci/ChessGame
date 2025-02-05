@@ -8,6 +8,7 @@ public class ChessBoardPanel extends JPanel {
     private int cellSize = 60; // Her bir kare için boyut
     private ChessPiece selectedPiece;
     private int selectedX, selectedY;
+    private boolean isWhiteTurn = true; // Beyaz oyuncunun sırası başta
 
     public ChessBoardPanel(Board board) {
         this.board = board;
@@ -24,7 +25,7 @@ public class ChessBoardPanel extends JPanel {
 
                 if (selectedPiece == null) {
                     // Hiç taş seçili değilse ve bir taş varsa, o taşı seç
-                    if (piece != null) {
+                    if (piece != null && piece.isWhite() == isWhiteTurn) {  // Oyuncunun sırası gelmişse taş seçilsin
                         selectedPiece = piece;
                         selectedX = x;
                         selectedY = y;
@@ -33,16 +34,24 @@ public class ChessBoardPanel extends JPanel {
                     if (selectedPiece == piece) {
                         // Eğer aynı taşa tıklanırsa sadece seçimi iptal et
                         selectedPiece = null;
-                    } else if (piece != null) {
+                    } else if (piece != null && piece.isWhite() == isWhiteTurn) {
                         // Farklı bir taş seçildiğinde, önceki taşı sıfırla ve yeni taşı seç
                         selectedPiece = piece;
                         selectedX = x;
                         selectedY = y;
                     } else if (isValidMove(selectedPiece, selectedX, selectedY, x, y)) {
                         // Eğer geçerli hamle yapılırsa taşı taşı
-                        board.setPiece(y, x, selectedPiece);
-                        board.setPiece(selectedY, selectedX, null);
+                        ChessPiece capturedPiece = board.getPiece(y, x); // Hedef karedeki taşı al
+                        board.setPiece(y, x, selectedPiece); // Yeni taşı hedef kareye yerleştir
+                        board.setPiece(selectedY, selectedX, null); // Eski taşı kaldır
+
+                        // Eğer taş yeme gerçekleştiyse, rakip taş tahtadan kaldırılacak
+                        if (capturedPiece != null) {
+                            capturedPiece = null; // Rakip taş kaldırılıyor
+                        }
+
                         selectedPiece = null; // Seçimi sıfırla
+                        isWhiteTurn = !isWhiteTurn; // Sıra değiştir
                     }
                 }
                 repaint();
@@ -84,21 +93,24 @@ public class ChessBoardPanel extends JPanel {
             g.drawString(String.valueOf((char) ('a' + i)), i * cellSize + cellSize / 3, 8 * cellSize + 20); // a-h
             g.drawString(String.valueOf(8 - i), 8 * cellSize + 10, i * cellSize + cellSize / 2); // 1-8
         }
-    }
 
+        // Sıra bilgisini göster (Beyaz veya Siyah)
+        g.setColor(Color.RED);
+        g.drawString("Sıra: " + (isWhiteTurn ? "Beyaz" : "Siyah"), 10, 10);
+    }
 
     // Geçerli bir hamleyi kontrol et
     private boolean isValidMove(ChessPiece piece, int startX, int startY, int endX, int endY) {
         // Burada her taşın geçerli hareketlerini kontrol etmeliyiz.
         // Örneğin, Kale için hareketleri kontrol edebiliriz.
         if (piece instanceof Rook) {
-            return isValidRookMove(startX, startY, endX, endY);
+            return isValidRookMove(piece, startX, startY, endX, endY);
         }
         // Diğer taşlar için hareket kuralları ekleyebilirsin.
         return false;
     }
 
-    private boolean isValidRookMove(int startX, int startY, int endX, int endY) {
+    private boolean isValidRookMove(ChessPiece piece, int startX, int startY, int endX, int endY) {
         // Kale yalnızca yatay veya dikey hareket eder
         if (startX == endX) {
             // Dikey hareket
@@ -119,7 +131,13 @@ public class ChessBoardPanel extends JPanel {
         } else {
             return false; // Yalnızca yatay ve dikey hareketler geçerlidir
         }
+
+        // Taşın hedef karedeki taşın rengini kontrol et
+        ChessPiece targetPiece = board.getPiece(endY, endX);
+        if (targetPiece != null && targetPiece.isWhite() == piece.isWhite()) {
+            return false; // Aynı renkten taş varsa hareket geçersiz
+        }
+
         return true;
     }
-
 }
