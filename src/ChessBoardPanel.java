@@ -39,7 +39,7 @@ public class ChessBoardPanel extends JPanel {
                         selectedPiece = piece;
                         selectedX = x;
                         selectedY = y;
-                    } else if (isValidMove(selectedPiece, selectedX, selectedY, x, y)) {
+                    } else if (selectedPiece.isValidMove(selectedX, selectedY, x, y, board)) {
                         // Eğer geçerli hamle yapılırsa taşı taşı
                         ChessPiece capturedPiece = board.getPiece(y, x); // Hedef karedeki taşı al
                         board.setPiece(y, x, selectedPiece); // Yeni taşı hedef kareye yerleştir
@@ -97,47 +97,5 @@ public class ChessBoardPanel extends JPanel {
         // Sıra bilgisini göster (Beyaz veya Siyah)
         g.setColor(Color.RED);
         g.drawString("Sıra: " + (isWhiteTurn ? "Beyaz" : "Siyah"), 10, 10);
-    }
-
-    // Geçerli bir hamleyi kontrol et
-    private boolean isValidMove(ChessPiece piece, int startX, int startY, int endX, int endY) {
-        // Burada her taşın geçerli hareketlerini kontrol etmeliyiz.
-        // Örneğin, Kale için hareketleri kontrol edebiliriz.
-        if (piece instanceof Rook) {
-            return isValidRookMove(piece, startX, startY, endX, endY);
-        }
-        // Diğer taşlar için hareket kuralları ekleyebilirsin.
-        return false;
-    }
-
-    private boolean isValidRookMove(ChessPiece piece, int startX, int startY, int endX, int endY) {
-        // Kale yalnızca yatay veya dikey hareket eder
-        if (startX == endX) {
-            // Dikey hareket
-            int step = (endY > startY) ? 1 : -1; // Hedefin üstünde mi, altında mı olduğunu belirle
-            for (int i = startY + step; i != endY; i += step) {
-                if (board.getPiece(i, startX) != null) {
-                    return false; // Eğer bir taş varsa hareket geçersiz
-                }
-            }
-        } else if (startY == endY) {
-            // Yatay hareket
-            int step = (endX > startX) ? 1 : -1; // Hedefin sağında mı, solunda mı olduğunu belirle
-            for (int i = startX + step; i != endX; i += step) {
-                if (board.getPiece(endY, i) != null) {
-                    return false; // Eğer bir taş varsa hareket geçersiz
-                }
-            }
-        } else {
-            return false; // Yalnızca yatay ve dikey hareketler geçerlidir
-        }
-
-        // Taşın hedef karedeki taşın rengini kontrol et
-        ChessPiece targetPiece = board.getPiece(endY, endX);
-        if (targetPiece != null && targetPiece.isWhite() == piece.isWhite()) {
-            return false; // Aynı renkten taş varsa hareket geçersiz
-        }
-
-        return true;
     }
 }
